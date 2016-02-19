@@ -1,0 +1,25 @@
+<template name="login">
+    <div class="middle-box text-center loginscreen animated fadeInDown">
+        <div>
+            <div>
+
+                <h1 class="logo-name">B</h1>
+
+            </div>
+            <h3>Welcome to Budgeteer</h3>
+            <p>Get your money working for you
+            </p>
+            <p>Login in to see it in action.</p>
+            <form class="m-t" role="form">
+                <input name="email" type="email" class="form-control" placeholder="Username" required="">
+                <input name="password" type="password" class="form-control" placeholder="Password" required="">
+                <button type="submit" class="btn btn-primary block full-width m-b">Login</button>
+
+                <a href="#"><small>Forgot password?</small></a>
+                <p class="text-muted text-center"><small>Do not have an account?</small></p>
+                <a class="btn btn-sm btn-white btn-block" href="{{pathFor route='register'}}">Create an account</a>
+            </form>
+            <p class="m-t"> <small>&copy; 2016</small> </p>
+        </div>
+    </div>
+</template>
