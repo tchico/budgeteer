@@ -19,31 +19,6 @@
         <div class="row">
             <div class="col">
                 <div class="float-e-margins text-center">
-                    <div class="ibox-title">
-                        <h5>Add category</h5>
-                    </div>
-                    <div class="ibox-content">
-                        <form role="form" class="form-inline">
-                            <div class="form-group">
-                                <input type="text" placeholder="Category Name" id="category_name" class="form-control">
-                            </div>
-                            <div class="input-group">
-                                <select id="parent_category" class="select2_parent form-control">
-                                    {{#each parents}}
-                                        {{>parent_category_detail}}
-                                    {{/each}}
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <select id="category_type" class="select2_cat_type form-control">
-                                    <option value="Expense">Expense</option>
-                                    <option value="Income">Income</option>
-                                </select>
-                            </div>
-                            <button class="btn btn-white" type="submit">Add</button>
-                        </form>
-                    </div>
-
                     <div class="ibox-content">
 
                         <div class="table-responsive">
@@ -51,24 +26,33 @@
                             <thead>
                             <tr>
                                 <th>Category Name</th>
-                                <th>Parent Category</th>
-                                <th>Type</th>
-                                <th>Created date</th>
+                                <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {{#each categories}}
+                            <tr class="gradeX">
+                                <td style="text-align: left">Income</td>
+                                <td>
+                                    <form role="form" class="form-inline-add-income">
+                                        {{>add_sub_category}}
+                                    </form>
+                                </td>
+                            </tr>
+                            {{#each categories_income}}
+                                {{> category_detail}}
+                            {{/each}}
+                            <tr class="gradeX">
+                                <td style="text-align: left">Expense</td>
+                                <td>
+                                    <form role="form" class="form-inline-add-expense">
+                                        {{>add_sub_category}}
+                                    </form>
+                                </td>
+                            </tr>
+                            {{#each categories_expense}}
                                 {{> category_detail}}
                             {{/each}}
                             </tbody>
-                            <tfoot>
-                            <tr>
-                                <th>Category Name</th>
-                                <th>Parent Category</th>
-                                <th>Type</th>
-                                <th>Created date</th>
-                            </tr>
-                            </tfoot>
                         </table>
                         </div>
                     </div>
@@ -78,15 +62,66 @@
     </div>
 </template>
 
+<template name="add_sub_category">
+    <div class="form-group">
+        <input type="text" placeholder="Add sub category" id="category_name" class="form-control">
+    </div>
+</template>
+
 <template name="category_detail">
     <tr class="gradeX">
-        <td>{{name}}</td>
-        <td>{{parent_category}}</td>
-        <td>{{type}}</td>
-        <td class="center">{{created_date}}</td>
+        <td style="text-align: left">
+            <span style="padding-left:5em">{{category_display_name}}</span>
+        </td>
+        <td>
+            <div class="col-lg-12">                
+                <form role="form" class="form-inline-add-sub-category col-lg-6">
+                    {{>add_sub_category}}
+                </form>
+                <span class="col-lg-6">
+                    <a class="delete btn btn-danger">Delete</a>
+                </span>
+            </div>
+        </td>
     </tr>
 </template>
 
+
 <template name="parent_category_detail">
     <option value="{{name}}">{{name}}</option>
+</template>
+
+<template name="category_tree">
+    <div id="jstree_categories">
+        <ul>
+            <li class="jstree-open">Income
+                <ul>
+                    {{#each categories_income}}
+                        {{>category_tree_item}}
+                    {{/each}}
+                </ul>
+            </li>
+            <li class="jstree-open">Expense
+                <ul>
+                    {{#each categories_expense}}
+                        {{>category_tree_item}}
+                    {{/each}}
+                </ul>
+            </li>
+        </ul>
+    </div>
+</template>
+
+<template name="category_tree_item">    
+    {{#if child_categories}}
+        <li>{{name}}
+            <ul>
+                {{#each child_categories}}
+                    <li data-jstree='{"type":"child"}'>{{this}}</li>
+                {{/each}}
+            </ul>
+        </li>
+    {{else}}
+        <li data-jstree='{"type":"child"}'>{{name}}</li>
+    {{/if}}
 </template>

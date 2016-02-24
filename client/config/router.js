@@ -41,6 +41,11 @@ Router.route('/categories', function () {
     this.render('categories');
 });
 
+Router.route('/budget', function () {
+    this.render('budget');
+});
+
+
 //
 // Graphs routes
 //

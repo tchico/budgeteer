@@ -1,3 +1,7 @@
+
+
+
+//events
 Template.login.events({
     "submit .m-t": function (event) {
       // Prevent default browser form submit
@@ -50,6 +54,7 @@ Template.navigation.events({
       Meteor.logout(function(error){
           if(error){
               console.log(error.reason);
+              toastr.error('Error logging out');
           } else {
               Router.go("login");
           }
@@ -66,7 +71,8 @@ Template.topNavbar.events({
       //Logout
       Meteor.logout(function(error){
           if(error){
-            toastr.error('Error logging out', error.reason)
+            console.log(error.reason);
+            toastr.error('Error logging out');
           } else {
             Router.go("login");
           }
@@ -75,26 +81,5 @@ Template.topNavbar.events({
     }
 });
 
-//CATEGORIES
-Template.categories.events({
-    "submit .form-inline": function (event) {
-      // Prevent default browser form submit
-      event.preventDefault();
- 
-      // Get value from form element
-      var category_name = event.target.category_name.value;
-      var parent_category = event.target.parent_category.value;
-      var type = event.target.category_type.value;
- 
-      //add category
-      Meteor.call("addCategory", 
-                  category_name, 
-                  parent_category, 
-                  type, 
-                  function(error){
-                      notif_error('Error logging out', error);
-                  });
-      toastr.success('Category added');
-    }
-  });
+
 

@@ -16,12 +16,47 @@ Template.navigation.helpers({
 
 //CATEGORIES
 Template.categories.helpers({
-  categories: function () {
-      return BudgetCategory.find({}, {sort: {created_date: -1}});
+  categories_income: function () {
+      return BudgetCategory.find({type: 'Income', owner: Meteor.userId()}, 
+                                 {sort: {parent_category: 1, name: 1}});
+  },
+  categories_expense: function () {
+      return BudgetCategory.find({type: 'Expense', owner: Meteor.userId()}, 
+                                 {sort: {parent_category: 1, name: 1}});
   },
   parents: function () {
-      return BudgetCategory.find({}, {sort: {name: 1}});
+      return BudgetCategory.find({owner: Meteor.userId()}, {sort: {name: 1}});
   }
 });
+
+Template.category_detail.helpers({
+  category_display_name: function(){
+      if(this.name != this.parent_category){
+        return this.parent_category + ' > ' + this.name;  
+      }else{
+        return this.name;
+      }
+  }
+});
+
+Template.edit_category.helpers({
+  parents: function () {
+      return BudgetCategory.find({owner: Meteor.userId(), type: this.type},
+                                 {sort: {name: 1}});
+  }
+});
+
+Template.category_tree.helpers({
+  categories_expense: function () {
+      var categories = BudgetCategory.find({'type': 'Expense', 'parent_category': ''}, 
+                                           {sort: {name: 1}});
+      return categories;
+  },
+  categories_income: function () {
+      return BudgetCategory.find({'type': 'Income'}, {sort: {name: 1}});
+  }
+});
+
+
 
 
