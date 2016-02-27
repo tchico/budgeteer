@@ -88,20 +88,6 @@ Meteor.methods({
     BudgetCategory.remove(categoryId);
   },
 
-  addBudgetMonth: function (year, month, category, amount) {
-    // Make sure the user is logged in before inserting
-    checkUserValid();
- 
-    Budget.insert({
-      year: year,
-      month: month,
-      category: category,
-      amount: amount,
-      owner: Meteor.userId(),
-      createdAt: new Date()
-    });
-  },
-
   moveNode: function(categoryName, oldParentName, newParentName){
     checkUserValid();
     console.log('Moving node: '+ categoryName + '..' + oldParentName +'..'+ newParentName);
@@ -126,5 +112,26 @@ Meteor.methods({
 
     //update the category and set the new parent
     BudgetCategory.update(category._id, {$set: {parent_category: newParentName}});
+  },
+
+  createBudget: function(budgetName){
+    checkUserValid();
+    var budget = Budget.findOne({name: budgetName, owner: Meteor.userId()});
+    if(budget){
+      throw new Meteor.Error("That name is already taken!");  
+    }
+
+    var categories = BudgetCategory.find({owner: Meteor.userId()}).fetch();
+    for(var category in categories){
+      Budget.insert({
+        name: budgetName,
+        category: category.name,
+        amount: {'Jan':0, 'Feb':0, 'Mar':0, 'Apr':0,
+                 'May':0, 'Jun':0, 'Jul':0, 'Aug':0,
+                 'Sep':0, 'Oct':0, 'Nov':0, 'Dec':0},
+        owner: Meteor.userId(),
+        createdAt: new Date()
+      });
+    }
   }
 });
