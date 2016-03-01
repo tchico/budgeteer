@@ -10,3 +10,9 @@ Meteor.publish("budget", function () {
 	    { owner: this.userId }
 	);
 });
+
+Meteor.publish("preferences", function () {
+	return Preferences.find(
+	    { owner: this.userId }
+	);
+});

@@ -1,30 +1,3 @@
-//subscritpions
-Meteor.subscribe("budget_categories");
-Meteor.subscribe("budget");
-
-
-//functions
-function getAllCategories(type){
-    return BudgetCategory.find({type: type, owner: Meteor.userId()}, 
-                               {sort: {parent_category: 1, name: 1}});
-};
-
-function getAllLeafCategories(type){
-  return BudgetCategory.find(
-          {type: type,
-           child_categories: {$exists: false}, //only want leaf categories
-           owner: Meteor.userId()}, 
-          {sort: {parent_category: 1, name: 1}});
-};
-
-function getCategoryDisplayName(category){
-    if(category.name != category.parent_category){
-      return category.parent_category + ' > ' + category.name;  
-    }else{
-      return category.name;
-    }
-};
-
 
 //helpers
 Template.navigation.helpers({
@@ -65,6 +38,8 @@ Template.category_tree.helpers({
   },
 });
 
+
+//BUDGET
 Template.budget.helpers({
   categories_income: function () {
       return getAllLeafCategories('Income');
@@ -81,7 +56,21 @@ Template.budget.helpers({
               function(x) {
                 return x.name;
               }), true);
-       return distinctEntries;
+      var fav_budget = Preferences.findOne({name: "favourite_budget"});
+      var budget_list = [];
+      var b_set_fav = false;
+      for(i in distinctEntries){
+        var budget_entry = {'name': distinctEntries[i]};
+        if(fav_budget && fav_budget.value == distinctEntries[i]){
+          budget_entry['fav'] = b_set_fav = true;
+        }
+        if((i == distinctEntries.length - 1) && !b_set_fav){
+          //if we haven't found a fav so far then set this guy as the fav.b_set_fav
+          budget_entry['fav'] = true
+        }
+        budget_list.push(budget_entry);
+      }
+      return budget_list;
   },
   summary: function(){
       return BudgetCategory.aggregate(
@@ -97,6 +86,4 @@ Template.budget.helpers({
       );
   }
 });
-
-
 

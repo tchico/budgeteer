@@ -42,7 +42,7 @@ function hasParent(category){
 
 // METEOR METHODS
 Meteor.methods({
-  // TASKS //
+  // CATEGORIES //
   addCategory: function (category_name, parent_category, type) {
     // Make sure the user is logged in before inserting a task
     checkUserValid();
@@ -114,6 +114,8 @@ Meteor.methods({
     BudgetCategory.update(category._id, {$set: {parent_category: newParentName}});
   },
 
+
+  // BUDGET
   createBudget: function(budgetName){
     checkUserValid();
     var budget = Budget.findOne({name: budgetName, owner: Meteor.userId()});
@@ -122,7 +124,8 @@ Meteor.methods({
     }
 
     var categories = BudgetCategory.find({owner: Meteor.userId()}).fetch();
-    for(var category in categories){
+    for(i in categories){
+      var category = categories[i];
       Budget.insert({
         name: budgetName,
         category: category.name,
@@ -133,5 +136,45 @@ Meteor.methods({
         createdAt: new Date()
       });
     }
-  }
+  },
+
+  deleteBudget: function(budgetName){
+    checkUserValid();
+    var budget = Budget.findOne({name: budgetName, owner: Meteor.userId()});
+    if(!budget){
+      throw new Meteor.Error("Budget not found");  
+    }
+    
+    var budgetCategories = Budget.find({name: budgetName.toString(), 
+                                        owner: Meteor.userId()}).fetch();
+    for(i in budgetCategories){
+      var category = budgetCategories[i];
+      Budget.remove({_id: category._id}); 
+    }  
+  },
+
+  favouriteBudget: function(budgetName){
+    checkUserValid();
+    var budget = Budget.findOne({name: budgetName, owner: Meteor.userId()});
+    if(!budget){
+      throw new Meteor.Error("Budget not found");  
+    }
+    
+    var pref = Preferences.findOne({name: "favourite_budget", 
+                                 owner: Meteor.userId()});
+    if(pref){
+      Preferences.update(
+         { _id: pref._id},
+         {$set: {value: budgetName}}
+      ); 
+    } else {
+      Preferences.insert({
+        name: "favourite_budget",
+        value: budgetName,
+        owner: Meteor.userId(),
+        created_date: new Date()
+      });
+    } 
+  },
+
 });

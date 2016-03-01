@@ -36,8 +36,27 @@
                 <tbody>
                     {{#each budget_list}}
                         <tr class="gradeX">
-                            <td style="text-align: left">{{this}}</td>
-                            <td> Open, Delete</td>
+                            <td style="text-align: left">
+                                {{#if fav}}
+                                    <i class="fa fa-star"></i>
+                                {{/if}}
+                                {{name}}
+                            </td>
+                            <td> 
+                                <button id="open_budget" class="btn btn-primary" type="button">
+                                    Open
+                                </button>
+                                {{#if fav}}
+                                {{else}}
+                                    <button id="favourite_budget" class="btn btn-primary" type="button">
+                                        <i class="fa fa-star"> Set as favourite</i>
+                                    </button>
+                                {{/if}}
+                                <button id="delete_budget" class="btn btn-danger" type="button">
+                                    <i class="fa fa-warning"> Delete</i>
+                                </button>
+
+                            </td>
                         </tr>
                     {{/each}}
                 </tbody>
