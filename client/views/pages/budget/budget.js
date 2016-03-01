@@ -1,36 +1,87 @@
 //budget.js
 Template.budget.rendered = function(){
-	//initialize the data table
-	$('#editable').dataTable({
-		responsive: true,
-        dom: 'T<"clear">lfrtip',
-		columnDefs: [ {
-	      targets: '_all',
-	      className: 'cat_editable'
-	    } ]
-    });
+	var budgetList = getBudgetsList();
+	var favourite_budget = undefined;
+	for(i in budgetList){
+		var budget = budgetList[i];
 
-    
-    drawBudgetTable();
+		//store the favourite
+		if(budget.fav){
+			favourite_budget = budget.name;
+		}
+
+		//initialize the data table
+		$('#editable-'+budget.name).dataTable({
+			responsive: true,
+	        dom: 'T<"clear">lfrtip',
+			columnDefs: [ 
+				{targets: [1,2,3,4,5,6,7,8,9,10,11,12], 	      
+				 type: "num",
+		      	 className: 'cat_editable'
+		    } ],
+		    paging:   false,
+		    searching: false,
+	        info:     false
+	    });
+
+	    drawBudgetTable(budget.name);
+	}
+
+	openBudget(favourite_budget);
 };
 
 
 
 //FUNCTIONS
-function drawBudgetTable(){
-    var oTable = $('#editable').DataTable();
+function drawBudgetTable(budgetName){
+    var oTable = $('#editable-'+budgetName).DataTable();
 	
 	/* Apply the jEditable handlers to the table */
-    oTable.$('.cat_editable').editable(function(value, settings) { 
+    oTable.$('.cat_editable').editable(
+    	function(value, settings) { 
     		/* Get the position of the current data from the node */
-			var aPos = oTable.fnGetPosition( this );
+    		var table = $('#editable-'+budgetName).DataTable();
+			var aPos = $('#editable-'+budgetName).dataTable().fnGetPosition( this );
+			var month = table.column( aPos[1] ).header().textContent;
+			var categoryDisplayName = table.row(aPos[0]).data()[0];
+			var category = categoryDisplayName.split(">").pop().trim();
+			console.log('Budget '+ budgetName +
+						': Set value '+ value + ' on Month ' + month + ' category ' + category);
+    		
+			Meteor.call('updateBudgetCategoryAmount', 
+						budgetName,
+						category,
+						month,
+						value,
+						function(error,result){
+			                if(error){
+			                  toastr.error(error.error);
+			                }else{
+				              //do nothing
+			                }
+			              }
+			           );
+
 		    return(value);
 		},
 		{	
-			"callback": function( sValue, y ) {
+			callback: function( sValue, y ) {
                 /* Redraw the table from the new data on the server */
-                oTable.fnDraw();
+                $('#editable-'+budgetName).dataTable().fnDraw();
             },
+            onsubmit: function(settings, td) {
+		        var input = $(td).find('input');
+		        var original = input.val();
+		        if ($.isNumeric(original)) {
+		            console.log("Validation correct");
+		            return true;
+		        } else {
+		            console.log("Validation failed. Ignoring");
+		            td.reset();
+		            toastr.error("Only numerical values");
+		            return false;
+		        }
+		    },
         	"width": "90%",
         	"height": "100%"
     });
@@ -67,9 +118,14 @@ function getBudgetCategory(budget){
 };
 
 function openBudget(budgetName){
+	//get the budget categories and amounts
 	var budgetCategories = getBudget(budgetName);
-	var oTable = $('#editable').DataTable();
-	//lean the table before re-populating it
+
+	//set the current select budget
+	selectedBudget = budgetName;
+
+	//clean the table before re-populating it
+	var oTable = $('#editable-'+selectedBudget).DataTable();
 	oTable.rows().remove().draw();
 
     for(i in budgetCategories){
@@ -92,15 +148,8 @@ function openBudget(budgetName){
     					amounts.Dec
     					]);
 	}
-	drawBudgetTable();
+	drawBudgetTable(selectedBudget);
 };
-
-function getFavouriteBudget(){
-	return Budget.findOne({favourite: true, 
-						   owner: Meteor.userId()});
-};
-
-
 
 //EVENTS
 Template.budget.events(
@@ -116,19 +165,18 @@ Template.budget.events(
 	        createBudget(budgetName);
 	        template.find(".add-budget").reset();
     	},
-    	"click #open_budget": function (event, template) {
+    	"click .open_budget": function (event, template) {
 	        // Prevent default browser form submit
 	        event.preventDefault();
 	 
 	        // Get value from form element
-	        var budgetName = this.name;
+	        selectedBudget = this.name;
 
+	        var oTable = $('#editable-'+selectedBudget).DataTable();
 
-	        var oTable = $('#editable').DataTable();
+	        openBudget(selectedBudget);
 
-	        openBudget(budgetName);
-
-	        toastr.info('Budget '+ budgetName +' opened.');
+	        toastr.info('Budget '+ selectedBudget +' opened.');
     	},
     	"click #delete_budget": function (event, template) {
 	        // Prevent default browser form submit

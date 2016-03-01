@@ -177,4 +177,22 @@ Meteor.methods({
     } 
   },
 
+  updateBudgetCategoryAmount: function(budgetName, category, month, newAmount){
+    checkUserValid();
+    var budget = Budget.findOne({name: budgetName, 
+                                 category: category,
+                                 owner: Meteor.userId()});
+    if(!budget){
+      throw new Meteor.Error("Budget/Category not found");  
+    }
+
+    var amounts = budget.amount;
+    amounts[month] = newAmount;
+
+    Budget.update(
+       { _id: budget._id},
+       {$set: {amount: amounts}}
+    ); 
+  },
+
 });
