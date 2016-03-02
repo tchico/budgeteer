@@ -25,7 +25,23 @@ Template.budget.rendered = function(){
 	    });
 
 	    drawBudgetTable(budget.name);
-	}
+
+	    //init the header table
+		$('#head_editable-'+budget.name).dataTable({
+			responsive: true,
+	        dom: 'T<"clear">lfrtip',
+			columnDefs: [ 
+				{targets: [1,2,3,4,5,6,7,8,9,10,11,12], 	      
+				 type: "num"
+		    } ],
+		    paging:   false,
+		    searching: false,
+	        info:     false,
+	        sortable: false
+	    });
+	};
+
+
 
 	openBudget(favourite_budget);
 };
@@ -120,7 +136,9 @@ function getBudgetCategory(budget){
 function openBudget(budgetName){
 	//get the budget categories and amounts
 	var budgetCategories = getBudget(budgetName);
-
+	if(!budgetName){
+		console.error('Unable to open the budget');
+	}
 	//set the current select budget
 	selectedBudget = budgetName;
 
@@ -132,21 +150,23 @@ function openBudget(budgetName){
     	var categoryBudget = budgetCategories[i];
     	var amounts = categoryBudget.amount;
     	var category = getBudgetCategory(categoryBudget);
-		var displayName = getCategoryDisplayName(category);
-    	oTable.row.add([displayName,
-    					amounts.Jan,
-    					amounts.Feb,
-    					amounts.Mar,
-    					amounts.Apr,
-    					amounts.May,
-    					amounts.Jun,
-    					amounts.Jul,
-    					amounts.Aug,
-    					amounts.Sep,
-    					amounts.Oct,
-    					amounts.Nov,
-    					amounts.Dec
-    					]);
+    	if(isCategoryLeaf(category)){
+			var displayName = getCategoryDisplayName(category);
+	    	oTable.row.add([displayName,
+	    					amounts.Jan,
+	    					amounts.Feb,
+	    					amounts.Mar,
+	    					amounts.Apr,
+	    					amounts.May,
+	    					amounts.Jun,
+	    					amounts.Jul,
+	    					amounts.Aug,
+	    					amounts.Sep,
+	    					amounts.Oct,
+	    					amounts.Nov,
+	    					amounts.Dec
+	    					]);
+    	}
 	}
 	drawBudgetTable(selectedBudget);
 };
@@ -172,8 +192,6 @@ Template.budget.events(
 	        // Get value from form element
 	        selectedBudget = this.name;
 
-	        var oTable = $('#editable-'+selectedBudget).DataTable();
-
 	        openBudget(selectedBudget);
 
 	        toastr.info('Budget '+ selectedBudget +' opened.');
@@ -191,6 +209,7 @@ Template.budget.events(
                       toastr.error(error.error);
                     }else{
                         toastr.success('Budget deleted'); 
+                        openBudget(getFavouriteBudget());
                     }
                   });
     	},
