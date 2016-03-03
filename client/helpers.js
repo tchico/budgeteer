@@ -1,5 +1,11 @@
 
 //helpers
+Template.registerHelper('arrayify',function(obj){
+    result = [];
+    for (var key in obj) result.push({name:key,value:obj[key]});
+    return result;
+});
+
 Template.navigation.helpers({
   b_user: function () {
   	var emails = Meteor.user().emails;
@@ -41,23 +47,23 @@ Template.category_tree.helpers({
 
 //BUDGET
 Template.budget.helpers({
-  categories_income: function () {
-      return getAllLeafCategories('Income');
-  },
-  categories_expense: function () {
-      return getAllLeafCategories('Expense');
+  categories: function (type, budgetName) {
+      return getBudgetRows(type, budgetName);
   },
   category_display_name: function(){
-      return getCategoryDisplayName(this);
+      var category = BudgetCategory.findOne({name: this.category});
+      return getCategoryDisplayName(category);
   },
   budget_list: getBudgetsList,
-  summary: function(){
-      return getAggregatedBudgetTable(selectedBudget);
+  summary: function(budgetName){
+      return getAggregatedBudgetTable(budgetName);
   },
-  selected_budget: function(){
-    console.log('selected_budget:'+selectedBudget);
-    return selectedBudget;
-  },
-  budget_for_category: getBudgetForCategory,
+  summary_column: function(value){
+    var css_class = "text-success";
+    if(value < 0){
+      css_class = "text-danger";
+    }
+    return '<td class="'+css_class+'">'+value+'</td>';
+  }
 });
 

@@ -14,36 +14,16 @@ Template.budget.rendered = function(){
 		$('#editable-'+budget.name).dataTable({
 			responsive: true,
 	        dom: 'T<"clear">lfrtip',
-			columnDefs: [ 
-				{targets: [1,2,3,4,5,6,7,8,9,10,11,12], 	      
-				 type: "num",
-		      	 className: 'cat_editable'
-		    } ],
-		    paging:   false,
-		    searching: false,
-	        info:     false
-	    });
-
-	    drawBudgetTable(budget.name);
-
-	    //init the header table
-		$('#head_editable-'+budget.name).dataTable({
-			responsive: true,
-	        dom: 'T<"clear">lfrtip',
-			columnDefs: [ 
-				{targets: [1,2,3,4,5,6,7,8,9,10,11,12], 	      
-				 type: "num"
-		    } ],
 		    paging:   false,
 		    searching: false,
 	        info:     false,
-	        sortable: false
+	        ordering: false
 	    });
+
+	    drawBudgetTable(budget.name);
 	};
 
-
-
-	openBudget(favourite_budget);
+	//openBudget(favourite_budget);
 };
 
 
@@ -60,7 +40,7 @@ function drawBudgetTable(budgetName){
 			var aPos = $('#editable-'+budgetName).dataTable().fnGetPosition( this );
 			var month = table.column( aPos[1] ).header().textContent;
 			var categoryDisplayName = table.row(aPos[0]).data()[0];
-			var category = categoryDisplayName.split(">").pop().trim();
+			var category = categoryDisplayName.split("&gt;").pop().trim();
 			console.log('Budget '+ budgetName +
 						': Set value '+ value + ' on Month ' + month + ' category ' + category);
     		
@@ -78,10 +58,16 @@ function drawBudgetTable(budgetName){
 			              }
 			           );
 
-		    return(value);
+		    return value;
 		},
 		{	
 			callback: function( sValue, y ) {
+                /* 
+                because reactive will append the value in the cell
+                This is necessary to clean out the value that jeditable
+                left in the cell. Otherwise the value would appear duplicated.
+				*/
+                $(this).text('');
                 /* Redraw the table from the new data on the server */
                 $('#editable-'+budgetName).dataTable().fnDraw();
             },
@@ -89,17 +75,18 @@ function drawBudgetTable(budgetName){
 		        var input = $(td).find('input');
 		        var original = input.val();
 		        if ($.isNumeric(original)) {
-		            console.log("Validation correct");
+		            console.debug("Validation correct");
 		            return true;
 		        } else {
-		            console.log("Validation failed. Ignoring");
+		            console.debug("Validation failed. Ignoring");
 		            td.reset();
 		            toastr.error("Only numerical values");
 		            return false;
 		        }
 		    },
         	"width": "90%",
-        	"height": "100%"
+        	"height": "100%",
+        	"placeholder" : ""
     });
 
     oTable.draw();
@@ -139,11 +126,9 @@ function openBudget(budgetName){
 	if(!budgetName){
 		console.error('Unable to open the budget');
 	}
-	//set the current select budget
-	selectedBudget = budgetName;
 
 	//clean the table before re-populating it
-	var oTable = $('#editable-'+selectedBudget).DataTable();
+	var oTable = $('#editable-'+budgetName).DataTable();
 	oTable.rows().remove().draw();
 
     for(i in budgetCategories){
@@ -168,7 +153,7 @@ function openBudget(budgetName){
 	    					]);
     	}
 	}
-	drawBudgetTable(selectedBudget);
+	drawBudgetTable(budgetName);
 };
 
 //EVENTS
@@ -190,9 +175,9 @@ Template.budget.events(
 	        event.preventDefault();
 	 
 	        // Get value from form element
-	        selectedBudget = this.name;
+	        var selectedBudget = this.name;
 
-	        openBudget(selectedBudget);
+	        //openBudget(selectedBudget);
 
 	        toastr.info('Budget '+ selectedBudget +' opened.');
     	},
@@ -209,7 +194,7 @@ Template.budget.events(
                       toastr.error(error.error);
                     }else{
                         toastr.success('Budget deleted'); 
-                        openBudget(getFavouriteBudget());
+                        //openBudget(getFavouriteBudget());
                     }
                   });
     	},

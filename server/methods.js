@@ -177,13 +177,13 @@ Meteor.methods({
     } 
   },
 
-  updateBudgetCategoryAmount: function(budgetName, category, month, newAmount){
+updateBudgetCategoryAmount: function(budgetName, category, month, newAmount){
     checkUserValid();
     var budget = Budget.findOne({name: budgetName, 
                                  category: category,
                                  owner: Meteor.userId()});
     if(!budget){
-      throw new Meteor.Error("Budget/Category not found");  
+      throw new Meteor.Error("Budget/Cat."+ budgetName+"/"+category+" not found");  
     }
 
     var amounts = budget.amount;
