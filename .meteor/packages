@@ -12,7 +12,6 @@ jquery
 okgrow:router-autoscroll
 dbarrett:dropzonejs
 
-twbs:bootstrap@3.3.6
 standard-minifiers
 meteor-base
 mobile-experience
@@ -31,3 +30,5 @@ accounts-password
 natestrauser:select2
 kadira:debug
 meteorhacks:aggregate
+peppelg:bootstrap-3-modal
+twbs:bootstrap

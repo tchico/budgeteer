@@ -23,7 +23,7 @@ Template.budget.rendered = function(){
 	    drawBudgetTable(budget.name);
 	};
 
-	//openBudget(favourite_budget);
+	
 };
 
 
@@ -120,41 +120,7 @@ function getBudgetCategory(budget){
 	return BudgetCategory.findOne({name: budget.category, owner: Meteor.userId()});
 };
 
-function openBudget(budgetName){
-	//get the budget categories and amounts
-	var budgetCategories = getBudget(budgetName);
-	if(!budgetName){
-		console.error('Unable to open the budget');
-	}
 
-	//clean the table before re-populating it
-	var oTable = $('#editable-'+budgetName).DataTable();
-	oTable.rows().remove().draw();
-
-    for(i in budgetCategories){
-    	var categoryBudget = budgetCategories[i];
-    	var amounts = categoryBudget.amount;
-    	var category = getBudgetCategory(categoryBudget);
-    	if(isCategoryLeaf(category)){
-			var displayName = getCategoryDisplayName(category);
-	    	oTable.row.add([displayName,
-	    					amounts.Jan,
-	    					amounts.Feb,
-	    					amounts.Mar,
-	    					amounts.Apr,
-	    					amounts.May,
-	    					amounts.Jun,
-	    					amounts.Jul,
-	    					amounts.Aug,
-	    					amounts.Sep,
-	    					amounts.Oct,
-	    					amounts.Nov,
-	    					amounts.Dec
-	    					]);
-    	}
-	}
-	drawBudgetTable(budgetName);
-};
 
 //EVENTS
 Template.budget.events(
@@ -177,26 +143,7 @@ Template.budget.events(
 	        // Get value from form element
 	        var selectedBudget = this.name;
 
-	        //openBudget(selectedBudget);
-
 	        toastr.info('Budget '+ selectedBudget +' opened.');
-    	},
-    	"click #delete_budget": function (event, template) {
-	        // Prevent default browser form submit
-	        event.preventDefault();
-	 
-	        // Get value from form element
-	        var budgetName = this.name;
-
-	        Meteor.call("deleteBudget", budgetName.toString(),
-                  function(error,result){
-                    if(error){
-                      toastr.error(error.error);
-                    }else{
-                        toastr.success('Budget deleted'); 
-                        //openBudget(getFavouriteBudget());
-                    }
-                  });
     	},
 
     	"click #favourite_budget": function (event, template) {
@@ -215,6 +162,55 @@ Template.budget.events(
                 }
             });
     	},
+
+    	"click #open_delete_modal": function (event, template) {
+	        // Prevent default browser form submit
+	        event.preventDefault();
+	 		
+	        // Get value from form element
+        	var budgetName = this.name;
+
+	        $('#delete_modal-'+budgetName).modal('show');
+    	},
 	}
 );
+
+
+Template.deleteModalTemplate.rendered = function(){
+	// Move modal to body
+    // Fix Bootstrap backdrop issu with animation.css
+    $('#delete_budget').click(function(){
+    	$('#delete_modal').modal('hide');
+    });
+}
+
+Template.deleteModalTemplate.events(
+{
+	"click #delete_budget": function (event, template) {
+        // Prevent default browser form submit
+        event.preventDefault();
+ 
+        // Get value from form element
+        var budgetName = template.data;
+        $('#delete_modal-'+budgetName).modal('hide');
+        Meteor.call("deleteBudget", budgetName.toString(),
+              function(error,result){
+                if(error){
+                  	toastr.error(error.error);
+                }else{
+                    toastr.warning('Budget deleted'); 
+                }
+                //hide the modal backdrop because it's not being hidden by the 
+                //modal('hide')
+                $('.modal-backdrop').hide();
+                $('body').removeClass('modal-open');
+                //because the deleted budget will still be the active one
+                //then we must active the favourite one
+                var tab_name = $('.fa-star').parent('.open_budget').attr('href');
+                $('.fa-star').parent('.open_budget').parent().toggleClass('active');
+                $(tab_name).toggleClass('active');
+              });
+        
+	}
+});
 
