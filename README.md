@@ -14,7 +14,7 @@ http://www.meteorpedia.com/read/Debugging
 
 ### Server debug - 
   
-<code>npm install -g node-inspector</code>
+<code>npm install -g node-inspector</code><BR>
 <code>node-inspector</code>
   
   > Go to the URL given by node-inspector in Chrome
