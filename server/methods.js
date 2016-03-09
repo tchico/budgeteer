@@ -4,6 +4,7 @@ function checkUserValid(){
     }
 }
 
+//CATEGORIES
 function removeChildFromParent(parentCategory, categoryName){
   var parent = BudgetCategory.findOne({name: parentCategory, owner: Meteor.userId()});
   if(!parent){
@@ -39,35 +40,68 @@ function hasParent(category){
 }
 
 
+//BUDGETS
+function createBudget(budgetName, categoryName){
+  Budget.insert({
+    name: budgetName,
+    category: categoryName,
+    amount: INITIAL_AMOUNT,
+    owner: Meteor.userId(),
+    createdAt: new Date()
+  });
+}
+
+function addCategoryToBudgets(categoryName){
+    var budgetNames = getBudgetsList();
+    budgetNames.forEach(function(budget){
+      createBudget(budget.name, categoryName);
+    });
+}
+
 
 // METEOR METHODS
 Meteor.methods({
   // CATEGORIES //
-  addCategory: function (category_name, parent_category, type) {
+  addCategory: function (categoryName, parentCategory, type) {
     // Make sure the user is logged in before inserting a task
     checkUserValid();
  
-    var exists = BudgetCategory.find({'name': category_name, 'owner': Meteor.userId()}).count();
+    var exists = BudgetCategory.find({'name': categoryName, 'owner': Meteor.userId()}).count();
     if(exists){
       throw new Meteor.Error("Category already exists");
     }
 
-    if(parent_category && parent_category != category_name){
-      var parent = BudgetCategory.findOne({'name': parent_category, 'owner': Meteor.userId()});
+    if(parentCategory && parentCategory != categoryName){
+      var parent = BudgetCategory.findOne({'name': parentCategory, 'owner': Meteor.userId()});
       if(!parent){
         throw new Meteor.Error("Parent Category not found");
       }else{
-        addChildToParent(parent_category, category_name);
+        addChildToParent(parentCategory, categoryName);
       }
     }
 
     BudgetCategory.insert({
-      name: category_name,
-      parent_category: parent_category,
+      name: categoryName,
+      parent_category: parentCategory,
       type: type,
       owner: Meteor.userId(),
       created_date: new Date()
     });
+
+    //When creating a category, add it to existing budgets.
+    addCategoryToBudgets(categoryName);
+  },
+
+  addCategoryToBudgets: function(categoryName){
+    var category = BudgetCategory.findOne({'name': categoryName});
+    if (category.owner !== Meteor.userId()) {
+      throw new Meteor.Error("not-authorized");
+    }
+    if(category.child_categories && category.child_categories.length){
+      throw new Meteor.Error("Category has child categories associated.");  
+    }
+
+    addCategoryToBudgets(categoryName);
   },
   
   deleteCategory: function (categoryId) {
@@ -79,10 +113,10 @@ Meteor.methods({
       throw new Meteor.Error("Category has child categories associated.");  
     }
     if(hasParent(category)){
-      var parent_category = BudgetCategory.findOne({'name': category.parent_category, 
+      var parentCategory = BudgetCategory.findOne({'name': category.parent_category, 
                                                     'owner': Meteor.userId()});
-      if(parent_category){
-        removeChildFromParent(parent_category.name, category.name);
+      if(parentCategory){
+        removeChildFromParent(parentCategory.name, category.name);
       }
     }
     BudgetCategory.remove(categoryId);
@@ -114,6 +148,29 @@ Meteor.methods({
     BudgetCategory.update(category._id, {$set: {parent_category: newParentName}});
   },
 
+  removeCategoryFromBudgets: function(categoryName){
+    checkUserValid();
+    if(!categoryName){
+      throw new Meteor.Error("Category name invalid");
+    }
+    
+    var category = BudgetCategory.findOne({name: categoryName, owner: Meteor.userId()});
+    if(!category){
+      throw new Meteor.Error("Category not found!");  
+    }
+
+    //remove the category from the budgets
+    var budgetNames = getBudgetsList();
+    budgetNames.forEach(function(budget){
+      var budgetLines = Budget.find({name: budget.name,
+                                     category: categoryName, 
+                                     owner: Meteor.userId()});
+      budgetLines.forEach(function(b){
+        Budget.remove({_id: b._id});
+      });
+    });
+  },
+
 
   // BUDGET
   createBudget: function(budgetName){
@@ -124,18 +181,9 @@ Meteor.methods({
     }
 
     var categories = BudgetCategory.find({owner: Meteor.userId()}).fetch();
-    for(i in categories){
-      var category = categories[i];
-      Budget.insert({
-        name: budgetName,
-        category: category.name,
-        amount: {'Jan':0, 'Feb':0, 'Mar':0, 'Apr':0,
-                 'May':0, 'Jun':0, 'Jul':0, 'Aug':0,
-                 'Sep':0, 'Oct':0, 'Nov':0, 'Dec':0},
-        owner: Meteor.userId(),
-        createdAt: new Date()
-      });
-    }
+    categories.forEach(function(category){
+      createBudget(budgetName, category.name);
+    });
   },
 
   deleteBudget: function(budgetName){
@@ -147,10 +195,9 @@ Meteor.methods({
     
     var budgetCategories = Budget.find({name: budgetName.toString(), 
                                         owner: Meteor.userId()}).fetch();
-    for(i in budgetCategories){
-      var category = budgetCategories[i];
+    budgetCategories.forEach(function(category){
       Budget.remove({_id: category._id}); 
-    }  
+    });  
   },
 
   favouriteBudget: function(budgetName){
@@ -177,7 +224,7 @@ Meteor.methods({
     } 
   },
 
-updateBudgetCategoryAmount: function(budgetName, category, month, newAmount){
+  updateBudgetCategoryAmount: function(budgetName, category, month, newAmount){
     checkUserValid();
     var budget = Budget.findOne({name: budgetName, 
                                  category: category,

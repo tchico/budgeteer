@@ -63,9 +63,7 @@
 </template>
 
 <template name="add_sub_category">
-    <div class="form-group">
         <input type="text" placeholder="Add sub category" id="category_name" class="form-control">
-    </div>
 </template>
 
 <template name="category_detail">
@@ -79,49 +77,11 @@
                     {{>add_sub_category}}
                 </form>
                 <span class="col-lg-6">
+                    {{#if is_child_category}}
                     <a class="delete btn btn-danger">Delete</a>
+                    {{/if}}
                 </span>
             </div>
         </td>
     </tr>
-</template>
-
-
-<template name="parent_category_detail">
-    <option value="{{name}}">{{name}}</option>
-</template>
-
-<template name="category_tree">
-    <div id="jstree_categories">
-        <ul>
-            <li class="jstree-open">Income
-                <ul>
-                    {{#each categories_income}}
-                        {{>category_tree_item}}
-                    {{/each}}
-                </ul>
-            </li>
-            <li class="jstree-open">Expense
-                <ul>
-                    {{#each categories_expense}}
-                        {{>category_tree_item}}
-                    {{/each}}
-                </ul>
-            </li>
-        </ul>
-    </div>
-</template>
-
-<template name="category_tree_item">    
-    {{#if child_categories}}
-        <li>{{name}}
-            <ul>
-                {{#each child_categories}}
-                    <li data-jstree='{"type":"child"}'>{{this}}</li>
-                {{/each}}
-            </ul>
-        </li>
-    {{else}}
-        <li data-jstree='{"type":"child"}'>{{name}}</li>
-    {{/if}}
 </template>

@@ -32,16 +32,10 @@ Template.categories.helpers({
 Template.category_detail.helpers({
   category_display_name: function(){
       return getCategoryDisplayName(this);
+  },
+  is_child_category: function(){
+      return isCategoryLeaf(this);
   }
-});
-
-Template.category_tree.helpers({
-  categories_income: function () {
-      return getAllCategories('Income');
-  },
-  categories_expense: function () {
-      return getAllCategories('Expense');
-  },
 });
 
 
