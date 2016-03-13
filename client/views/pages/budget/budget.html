@@ -57,7 +57,7 @@
                                 </div>
                             </div>
                             {{> deleteModalTemplate name}}
-                            <table class="table table-striped table-bordered table-hover " id="editable-{{name}}">
+                            <table class="table table-striped table-bordered table-hover hover" id="editable-{{name}}">
                                 <thead>
                                     <tr>
                                         <th>Category</th>
@@ -73,6 +73,7 @@
                                         <th>Oct</th>
                                         <th>Nov</th>
                                         <th>Dec</th>
+                                        <th>Type</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -91,6 +92,7 @@
                                         {{{summary_column this.[10]}}}
                                         {{{summary_column this.[11]}}}
                                         {{{summary_column this.[12]}}}
+                                        <td>Summary</td>
                                     </tr>
                                     {{/each}}
                                     {{> separator}}
@@ -100,6 +102,7 @@
                                         {{#each arrayify amount}}
                                             <td class="cat_editable">{{value}}</td>
                                         {{/each}}
+                                        <td>Expense</td>
                                     </tr>
                                     {{/each}}
                                     {{> separator}}
@@ -109,6 +112,7 @@
                                         {{#each arrayify amount}}
                                             <td class="cat_editable">{{value}}</td>
                                         {{/each}}
+                                        <td>Income</td>
                                     </tr>
                                     {{/each}}
                                 </tbody>
@@ -124,11 +128,11 @@
 </template>
 
 <template name="separator">
-    <tr>
+    <!--tr>
         <td></td><td></td><td></td><td></td>
         <td></td><td></td><td></td><td></td><td></td>
-        <td></td><td></td><td></td><td></td>
-    </tr>
+        <td></td><td></td><td></td><td></td><td></td>
+    </tr-->
 </template>
 
 

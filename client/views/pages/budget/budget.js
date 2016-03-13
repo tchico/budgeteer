@@ -17,7 +17,25 @@ Template.budget.rendered = function(){
 		    paging:   false,
 		    searching: false,
 	        info:     false,
-	        ordering: false
+	        ordering: false,
+	        "columnDefs": [
+	            { "visible": false, "targets": 13 }
+	        ],
+	        "drawCallback": function ( settings ) {
+	            var api = this.api();
+	            var rows = api.rows( {page:'current'} ).nodes();
+	            var last=null;
+	 
+	            api.column(13, {page:'current'} ).data().each( function ( group, i ) {
+	                if ( last !== group ) {
+	                    $(rows).eq( i ).before(
+	                        '<tr class="group"><td colspan="13">'+group+'</td></tr>'
+	                    );
+	 
+	                    last = group;
+	                }
+	            } );
+	        }
 	    });
 
 	    drawBudgetTable(budget.name);

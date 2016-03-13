@@ -45,6 +45,10 @@ Router.route('/budget', function () {
     this.render('budget');
 });
 
+Router.route('/accounts', function () {
+    this.render('accounts');
+});
+
 
 //
 // Graphs routes
