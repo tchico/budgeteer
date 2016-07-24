@@ -27,6 +27,12 @@ http://www.meteorpedia.com/read/Debugging
   
 * Then connect to http://localhost:3000 from the Kadira Debug UI
 
+### Connect to MongoDB
+
+* After starting the app:
+* > meteor mongo
+* > use meteor
+* > show collections
 
 
 
