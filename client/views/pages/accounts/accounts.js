@@ -25,7 +25,7 @@ Template.accounts.rendered = function() {
 };
 
 //FUNCTIONS
-function createAccount(accountName, type, bank, initialAmount) {
+function createAccount(accountName, type, bank, initialAmount, currencyName) {
     if (!accountName) {
         toastr.error('You need to provide an account name');
         return false;
@@ -38,8 +38,12 @@ function createAccount(accountName, type, bank, initialAmount) {
         toastr.error('You need to provide an account name');
         return false;
     }
+    if (!currencyName) {
+        toastr.error('You need to provide a currency');
+        return false;
+    }
     Meteor.call("createAccount",
-        accountName, type, bank, initialAmount,
+        accountName, type, bank, initialAmount, currencyName,
         function(error, result) {
             if (error) {
                 toastr.error(error.error);
@@ -109,9 +113,10 @@ Template.accounts.events({
         var type = event.target.type.value;
         var bank = event.target.bank.value;
         var initialAmount = event.target.initial_amount.value;
+        var currency = event.target.currency_code.value;
 
         //add account
-        if (createAccount(accountName, type, bank, initialAmount)) {
+        if (createAccount(accountName, type, bank, initialAmount, currency)) {
             $("#create_account_panel").hide();
             $("#create-account")[0].reset();
         }

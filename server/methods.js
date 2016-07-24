@@ -59,13 +59,13 @@ function addCategoryToBudgets(categoryName){
 }
 
 //ACCOUNTS
-function createAccount(accountName, type, bank, initialAmount, currency){
+function createAccount(accountName, type, bank, initialAmount, currencyCode){
   Account.insert({
     name: accountName,
     type: type,
     bank: bank,
     balance: initialAmount,
-    currency_id: currency._id,
+    currency_id: currencyCode,
     owner: Meteor.userId(),
     createdAt: new Date()
   });
@@ -258,15 +258,14 @@ Meteor.methods({
 
 
   //ACCOUNTS
-  createAccount: function(accountName, type, bank, initialAmount, currencyName){
+  createAccount: function(accountName, type, bank, initialAmount, currencyCode){
     checkUserValid();
     var account = Account.findOne({name: accountName, owner: Meteor.userId()});
     if(account){
       throw new Meteor.Error("That account name is already taken!");  
     }
-    var currency = Currency.findOne({name: currencyName, owner: Meteor.userId()});
 
-    createAccount(accountName, type, bank, initialAmount, currency);
+    createAccount(accountName, type, bank, initialAmount, currencyCode);
   },
 
   deleteAccount: function(accountName){
