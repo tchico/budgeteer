@@ -12,7 +12,6 @@ jquery
 okgrow:router-autoscroll
 dbarrett:dropzonejs
 
-standard-minifiers
 meteor-base
 mobile-experience
 mongo
@@ -32,3 +31,5 @@ kadira:debug
 meteorhacks:aggregate
 peppelg:bootstrap-3-modal
 twbs:bootstrap
+standard-minifier-css
+standard-minifier-js

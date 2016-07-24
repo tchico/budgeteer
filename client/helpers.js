@@ -61,3 +61,10 @@ Template.budget.helpers({
   }
 });
 
+
+//ACCOUNTS
+Template.accounts.helpers({
+  accounts: function () {
+      return getAccounts();
+  },
+});

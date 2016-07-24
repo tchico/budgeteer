@@ -58,6 +58,20 @@ function addCategoryToBudgets(categoryName){
     });
 }
 
+//ACCOUNTS
+function createAccount(accountName, type, bank, initialAmount, currency){
+  Account.insert({
+    name: accountName,
+    type: type,
+    bank: bank,
+    balance: initialAmount,
+    currency_id: currency._id,
+    owner: Meteor.userId(),
+    createdAt: new Date()
+  });
+}
+
+
 
 // METEOR METHODS
 Meteor.methods({
@@ -242,4 +256,26 @@ Meteor.methods({
     ); 
   },
 
+
+  //ACCOUNTS
+  createAccount: function(accountName, type, bank, initialAmount, currencyName){
+    checkUserValid();
+    var account = Account.findOne({name: accountName, owner: Meteor.userId()});
+    if(account){
+      throw new Meteor.Error("That account name is already taken!");  
+    }
+    var currency = Currency.findOne({name: currencyName, owner: Meteor.userId()});
+
+    createAccount(accountName, type, bank, initialAmount, currency);
+  },
+
+  deleteAccount: function(accountName){
+    checkUserValid();
+    var account = Account.findOne({name: accountName, owner: Meteor.userId()});
+    if(!account){
+      throw new Meteor.Error("Account not found");  
+    }
+    
+    Account.remove({_id: account._id}); 
+  }
 });

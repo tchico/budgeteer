@@ -16,3 +16,9 @@ Meteor.publish("preferences", function () {
 	    { owner: this.userId }
 	);
 });
+
+Meteor.publish("account", function () {
+	return Account.find(
+	    { owner: this.userId }
+	);
+});
