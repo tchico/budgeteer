@@ -71,6 +71,19 @@ function createAccount(accountName, type, bank, initialAmount, currencyCode){
   });
 }
 
+//TRANSACTIONS
+function createTransaction(date, category, type, account, amount){
+  Transaction.insert({
+      date: date,
+      category: category,
+      type: type,
+      account: account,
+      amount: amount,
+      owner: Meteor.userId(),
+      createdAt: new Date()
+  });
+}
+
 
 
 // METEOR METHODS
@@ -276,5 +289,12 @@ Meteor.methods({
     }
     
     Account.remove({_id: account._id}); 
-  }
+  },
+
+  //TRANSACTIONS
+  createTransaction: function(date, category, type, account, amount){
+    checkUserValid();
+
+    createTransaction(date, category, type, account, amount);
+  },
 });

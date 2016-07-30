@@ -49,6 +49,10 @@ Router.route('/accounts', function () {
     this.render('accounts');
 });
 
+Router.route('/transactions', function () {
+    this.render('transactions');
+});
+
 
 //
 // Graphs routes

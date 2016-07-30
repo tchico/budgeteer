@@ -22,3 +22,9 @@ Meteor.publish("account", function () {
 	    { owner: this.userId }
 	);
 });
+
+Meteor.publish("transactions", function () {
+	return Transaction.find(
+		{ owner: this.userId }
+	);
+});

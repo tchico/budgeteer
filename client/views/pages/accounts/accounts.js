@@ -22,6 +22,8 @@ Template.accounts.rendered = function() {
 
     $("[data-toggle=tooltip]").tooltip();
 
+    getAccounts();
+
 };
 
 //FUNCTIONS
@@ -120,5 +122,15 @@ Template.accounts.events({
             $("#create_account_panel").hide();
             $("#create-account")[0].reset();
         }
-    }
+    },
+
+    "click #see_transactions": function(event, template) {
+        // Prevent default browser form submit
+        event.preventDefault();
+
+        var accountName = this.name;
+
+        Router.go('/transactions');
+    },
+
 });

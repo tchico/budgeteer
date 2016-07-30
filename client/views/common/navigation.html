@@ -62,6 +62,10 @@
                     <a href="{{pathFor route='accounts'}}"><i class="fa fa-university"></i> 
                     <span class="nav-label" data-i18n="nav.accounts">Accounts</span> </a>
                 </li>
+                <li class="{{isActiveRoute regex='transactions'}}">
+                    <a href="{{pathFor route='transactions'}}"><i class="fa fa-money"></i>
+                        <span class="nav-label" data-i18n="nav.transactions">Transactions</span> </a>
+                </li>
                 <!--li class="{{isActiveRoute regex='c3charts|graphFlot|graphMorris|graphRickshaw|graphChartJs|graphPeity|graphSparkline|graphChartist'}}">
                     <a href="#"><i class="fa fa-bar-chart-o"></i> <span class="nav-label" data-i18n="nav.graphs">Graphs</span><span class="fa arrow"></span></a>
                     <ul class="nav nav-second-level collapse {{isActiveRoute regex='c3charts|graphFlot|graphMorris|graphRickshaw|graphChartJs|graphPeity|graphSparkline|graphChartist' className='in'}}">

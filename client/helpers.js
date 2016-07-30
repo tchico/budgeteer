@@ -68,5 +68,21 @@ Template.accounts.helpers({
     },
     currencies: function() {
         return getCurrencyNames();
-    }
+    },
+    currency: function(currencyCode){
+        return getCurrencyByCode(currencyCode).name;
+    },
+});
+
+//TRANSACTIONS
+Template.transactions.helpers({
+    accounts: function () {
+        return getAccounts();
+    },
+    transactions: function(accountId) {
+        return getTransactionsOfAccount(accountId);
+    },
+    categories: function(){
+        return getAllLeafCategories();
+    },
 });
