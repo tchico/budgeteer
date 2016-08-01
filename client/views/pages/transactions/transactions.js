@@ -129,25 +129,27 @@ function drawTransactionTable(accountName){
     oTable.draw();
 };
 
-function createTransaction(date, category, type, account, amount){
-    console.log("TODO: create the transaction ("
+function createTransaction(date, category, description, type, account, amount){
+    console.log("creating the transaction ("
             +date+", "
             +category+", "
+            +description+", "
             +type+", "
             +account+", "
             +amount+")");
 
-    if(!date || !category || !type || !account || !amount){
+    if(!date || !category || !description || !type || !account || !amount){
         toastr.error('You need to provide all fields for a transaction');
         return;
     }
 
-    Meteor.call("createTransaction", date, category, type, account, amount,
+    Meteor.call("createTransaction", date, category, description, type, account, amount,
         function(error,result){
             if(error){
                 toastr.error(error.error);
             }else{
                 toastr.success('Transaction created');
+                $("#create-transaction")[0].reset();
             }
         });
 }
@@ -176,13 +178,10 @@ Template.transactions.events({
         var type = event.target.type.value;
         var account = event.target.account_id.value;
         var amount = event.target.transaction_amount.value;
-
+        var description = event.target.description.value;
 
         //add account
-        if (createTransaction(date, category, type, account, amount)) {
-            $("#create_transaction_panel").hide();
-            $("#create-transaction")[0].reset();
-        }
+        createTransaction(date, category, description, type, account, amount);
     },
 
 });

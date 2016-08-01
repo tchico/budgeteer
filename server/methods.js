@@ -72,10 +72,11 @@ function createAccount(accountName, type, bank, initialAmount, currencyCode){
 }
 
 //TRANSACTIONS
-function createTransaction(date, category, type, account, amount){
+function createTransaction(date, category, description, type, account, amount){
   Transaction.insert({
       date: date,
       category: category,
+      description: description,
       type: type,
       account: account,
       amount: amount,
@@ -292,9 +293,9 @@ Meteor.methods({
   },
 
   //TRANSACTIONS
-  createTransaction: function(date, category, type, account, amount){
+  createTransaction: function(date, category, description, type, account, amount){
     checkUserValid();
 
-    createTransaction(date, category, type, account, amount);
+    createTransaction(date, category, description, type, account, amount);
   },
 });

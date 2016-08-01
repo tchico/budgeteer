@@ -85,4 +85,11 @@ Template.transactions.helpers({
     categories: function(){
         return getAllLeafCategories();
     },
+    categoryName: function(categoryId){
+        var category = getCategory(categoryId);
+        return category.name;
+    },
+    isType: function(type, compareType){
+        return type == compareType;
+    }
 });
