@@ -154,6 +154,24 @@ function createTransaction(date, category, description, type, account, amount){
         });
 }
 
+
+function deleteTransaction(transactionId) {
+    if (!transactionId) {
+        toastr.error('You need to provide an transaction Id');
+        return false;
+    }
+    Meteor.call("deleteTransaction",
+        transactionId,
+        function(error, result) {
+            if (error) {
+                toastr.error(error.error);
+            } else {
+                toastr.success('Transaction deleted');
+            }
+        });
+    return true;
+}
+
 Template.transactions.events({
     "click #add_transaction": function(event, template) {
         // Prevent default browser form submit
@@ -183,5 +201,27 @@ Template.transactions.events({
         //add account
         createTransaction(date, category, description, type, account, amount);
     },
+    "click #transaction-info": function (event) {
+
+    },
+    "click #transaction-delete": function (event) {
+        // Prevent default browser form submit
+        event.preventDefault();
+        var transactionDescription = this.description;
+        var transactionId = this._id;
+
+        swal({
+            title: "Delete transaction!",
+            text: "This will remove the transaction with description: " + transactionDescription + " !",
+            type: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#DD6B55",
+            confirmButtonText: "Yes, continue.",
+            closeOnConfirm: true
+        }, function() {
+            deleteTransaction(transactionId);
+        });
+
+    }
 
 });
