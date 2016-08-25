@@ -201,12 +201,16 @@ Template.transactions.events({
         //add account
         createTransaction(date, category, description, type, account, amount);
     },
-    "click #transaction-info": function (event) {
+    "click #transaction-edit": function (event) {
+        // Prevent default browser form submit
+        event.preventDefault();
+
 
     },
     "click #transaction-delete": function (event) {
         // Prevent default browser form submit
         event.preventDefault();
+
         var transactionDescription = this.description;
         var transactionId = this._id;
 

@@ -4,20 +4,18 @@
     <div class="wrapper animated fadeInRight">
         <div class="row">
             <div class="col-lg-12">
-                <div class="ibox">
-                    <div class="ibox-content text-center p-md">
-                        <div class="row">
-                            <div class="col-lg-10">
-                                <h2>
-                                    <span class="text-navy">Transactions</span>
-                                </h2>
-                            </div>
-                            <div class="col-lg-2">
-                                <button id="add_transaction" class="btn btn-primary dim" type="button" data-toggle="tooltip"
-                                        data-placement="top" title="Click here to add a new transaction">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </div>
+                <div class="ibox-title text-center p-md">
+                    <div class="row">
+                        <div class="col-lg-10">
+                            <h2>
+                                <span class="text-navy">Transactions</span>
+                            </h2>
+                        </div>
+                        <div class="col-lg-2">
+                            <button id="add_transaction" class="btn btn-primary dim" type="button" data-toggle="tooltip"
+                                    data-placement="top" title="Click here to add a new transaction">
+                                <i class="fa fa-plus"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -150,8 +148,8 @@
                                             <td class="cat_editable" style="text-align: left">{{#if isType type "debit"}}{{amount}}{{/if}}</td>
                                             <td class="cat_editable" style="text-align: left">{{#if isType type "credit"}}{{amount}}{{/if}}</td>
                                             <td style="text-align: left">
-                                                <button class="btn btn-primary" type="submit" id="transaction-details">
-                                                    <i class="fa fa-info-circle"></i>
+                                                <button class="btn btn-primary" type="submit" id="transaction-edit">
+                                                    <i class="fa fa-pencil-square-o"></i>
                                                 </button>
                                                 <button class="btn btn-primary" type="submit" id="transaction-delete">
                                                     <i class="fa fa-trash-o"></i>
