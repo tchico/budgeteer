@@ -38,7 +38,7 @@
                                     </form>
                                 </td>
                             </tr>
-                            {{#each categories_income}}
+                            {{#each parents "Income"}}
                                 {{> category_detail}}
                             {{/each}}
                             <tr class="gradeX">
@@ -49,7 +49,7 @@
                                     </form>
                                 </td>
                             </tr>
-                            {{#each categories_expense}}
+                            {{#each parents "Expense"}}
                                 {{> category_detail}}
                             {{/each}}
                             </tbody>
@@ -84,4 +84,7 @@
             </div>
         </td>
     </tr>
+    {{#each category_childs}}
+        {{> category_detail}}
+    {{/each}}
 </template>

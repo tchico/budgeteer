@@ -1,7 +1,7 @@
 Template.categories.rendered = function(){
 	$(".select2_parent").select2({
 	        placeholder: "Select a parent",
-	        allowClear: true,
+	        allowClear: true
 	});
 };
 
@@ -16,7 +16,7 @@ function deleteCategory(categoryId){
                         toastr.success('Category deleted'); 
                     }
                   });
-};
+}
 
 function createCategory(type, categoryName, parentCategoryName){
     //add category
@@ -55,8 +55,7 @@ function addCategoryToBudgets(categoryName){
 }
 
 function hasBudgetData(categoryName){
-    return Budget.find({category: categoryName, 
-                        amount: {$ne: INITIAL_AMOUNT}}).count() > 0;
+    return Budget.find({category: categoryName, owner: Meteor.userId()}).count() > 0;
 }
 
 //CATEGORIES
@@ -69,7 +68,7 @@ Template.categories.events({
         var categoryName = event.target.category_name.value;
  
         //add category
-        createCategory('Income', categoryName, categoryName);
+        createCategory('Income', categoryName, "");
         template.find(".form-inline-add-income").reset();
     },
 
@@ -81,7 +80,7 @@ Template.categories.events({
         var categoryName = event.target.category_name.value;
  
         //add category
-        createCategory('Expense', categoryName, categoryName);
+        createCategory('Expense', categoryName, "");
         template.find(".form-inline-add-expense").reset();
     },
 

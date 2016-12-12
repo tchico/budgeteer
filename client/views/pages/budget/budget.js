@@ -14,8 +14,8 @@ Template.budget.rendered = function(){
 		$('#editable-'+budget.name).dataTable({
 			responsive: true,
 	        dom: 'T<"clear">lfrtip',
-		    paging:   false,
-		    searching: false,
+		    	paging:   false,
+		    	searching: false,
 	        info:     false,
 	        ordering: false,
 	        "columnDefs": [
@@ -25,13 +25,13 @@ Template.budget.rendered = function(){
 	            var api = this.api();
 	            var rows = api.rows( {page:'current'} ).nodes();
 	            var last=null;
-	 
+
 	            api.column(13, {page:'current'} ).data().each( function ( group, i ) {
 	                if ( last !== group ) {
 	                    $(rows).eq( i ).before(
 	                        '<tr class="group"><td colspan="13">'+group+'</td></tr>'
 	                    );
-	 
+
 	                    last = group;
 	                }
 	            } );
@@ -39,9 +39,9 @@ Template.budget.rendered = function(){
 	    });
 
 	    drawBudgetTable(budget.name);
-	};
+	}
 
-	
+
 };
 
 
@@ -49,10 +49,10 @@ Template.budget.rendered = function(){
 //FUNCTIONS
 function drawBudgetTable(budgetName){
     var oTable = $('#editable-'+budgetName).DataTable();
-	
+
 	/* Apply the jEditable handlers to the table */
     oTable.$('.cat_editable').editable(
-    	function(value, settings) { 
+    	function(value, settings) {
     		/* Get the position of the current data from the node */
     		var table = $('#editable-'+budgetName).DataTable();
 			var aPos = $('#editable-'+budgetName).dataTable().fnGetPosition( this );
@@ -61,8 +61,8 @@ function drawBudgetTable(budgetName){
 			var category = categoryDisplayName.split("&gt;").pop().trim();
 			console.log('Budget '+ budgetName +
 						': Set value '+ value + ' on Month ' + month + ' category ' + category);
-    		
-			Meteor.call('updateBudgetCategoryAmount', 
+
+			Meteor.call('updateBudgetCategoryAmount',
 						budgetName,
 						category,
 						month,
@@ -78,9 +78,9 @@ function drawBudgetTable(budgetName){
 
 		    return value;
 		},
-		{	
+		{
 			callback: function( sValue, y ) {
-                /* 
+                /*
                 because reactive will append the value in the cell
                 This is necessary to clean out the value that jeditable
                 left in the cell. Otherwise the value would appear duplicated.
@@ -108,7 +108,7 @@ function drawBudgetTable(budgetName){
     });
 
     oTable.draw();
-};
+}
 
 
 function createBudget(budgetName){
@@ -121,10 +121,10 @@ function createBudget(budgetName){
                     if(error){
                       toastr.error(error.error);
                     }else{
-                        toastr.success('Budget created'); 
+                        toastr.success('Budget created');
                     }
                   });
-};
+}
 
 function getBudget(budgetName){
 	if(!budgetName){
@@ -132,11 +132,11 @@ function getBudget(budgetName){
 		return;
 	}
 	return Budget.find({name: budgetName.toString(), owner: Meteor.userId()}).fetch();
-};
+}
 
 function getBudgetCategory(budget){
 	return BudgetCategory.findOne({name: budget.category, owner: Meteor.userId()});
-};
+}
 
 
 
@@ -146,10 +146,10 @@ Template.budget.events(
 		"submit .add-budget": function (event, template) {
 	        // Prevent default browser form submit
 	        event.preventDefault();
-	 
+
 	        // Get value from form element
 	        var budgetName = event.target.name.value;
-	 
+
 	        //add category
 	        createBudget(budgetName);
 	        template.find(".add-budget").reset();
@@ -157,7 +157,7 @@ Template.budget.events(
     	"click .open_budget": function (event, template) {
 	        // Prevent default browser form submit
 	        event.preventDefault();
-	 
+
 	        // Get value from form element
 	        var selectedBudget = this.name;
 
@@ -167,7 +167,7 @@ Template.budget.events(
     	"click #favourite_budget": function (event, template) {
 	        // Prevent default browser form submit
 	        event.preventDefault();
-	 
+
 	        // Get value from form element
 	        var budgetName = this.name;
 
@@ -176,7 +176,7 @@ Template.budget.events(
                 if(error){
                   	toastr.error(error.error);
                 }else{
-                	toastr.success('Budget set as favourite.'); 
+                	toastr.success('Budget set as favourite.');
                 }
             });
     	},
@@ -184,12 +184,12 @@ Template.budget.events(
     	"click #open_delete_modal": function (event, template) {
 	        // Prevent default browser form submit
 	        event.preventDefault();
-	 		
+
 	        // Get value from form element
         	var budgetName = this.name;
 
 	        $('#delete_modal-'+budgetName).modal('show');
-    	},
+    	}
 	}
 );
 
@@ -200,14 +200,14 @@ Template.deleteModalTemplate.rendered = function(){
     $('#delete_budget').click(function(){
     	$('#delete_modal').modal('hide');
     });
-}
+};
 
 Template.deleteModalTemplate.events(
 {
 	"click #delete_budget": function (event, template) {
         // Prevent default browser form submit
         event.preventDefault();
- 
+
         // Get value from form element
         var budgetName = template.data;
         $('#delete_modal-'+budgetName).modal('hide');
@@ -216,9 +216,9 @@ Template.deleteModalTemplate.events(
                 if(error){
                   	toastr.error(error.error);
                 }else{
-                    toastr.warning('Budget deleted'); 
+                    toastr.warning('Budget deleted');
                 }
-                //hide the modal backdrop because it's not being hidden by the 
+                //hide the modal backdrop because it's not being hidden by the
                 //modal('hide')
                 $('.modal-backdrop').hide();
                 $('body').removeClass('modal-open');
@@ -228,7 +228,6 @@ Template.deleteModalTemplate.events(
                 $('.fa-star').parent('.open_budget').parent().toggleClass('active');
                 $(tab_name).toggleClass('active');
               });
-        
+
 	}
 });
-

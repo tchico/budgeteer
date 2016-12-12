@@ -102,7 +102,7 @@
                                         {{#each arrayify amount}}
                                             <td class="cat_editable">{{value}}</td>
                                         {{/each}}
-                                        <td>Expense</td>
+                                        <td>Income</td>
                                     </tr>
                                     {{/each}}
                                     {{> separator}}
@@ -112,7 +112,7 @@
                                         {{#each arrayify amount}}
                                             <td class="cat_editable">{{value}}</td>
                                         {{/each}}
-                                        <td>Income</td>
+                                        <td>Expense</td>
                                     </tr>
                                     {{/each}}
                                 </tbody>
@@ -124,15 +124,15 @@
             </div>
         </div>
     </div>
-    
+
 </template>
 
 <template name="separator">
-    <!--tr>
+    <tr>
         <td></td><td></td><td></td><td></td>
         <td></td><td></td><td></td><td></td><td></td>
         <td></td><td></td><td></td><td></td><td></td>
-    </tr-->
+    </tr>
 </template>
 
 
@@ -155,4 +155,3 @@
         </div>
     </div>
 </template>
-

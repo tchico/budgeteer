@@ -23,8 +23,8 @@ Template.categories.helpers({
     categories_expense: function () {
         return getAllCategories('Expense');
     },
-    parents: function () {
-        return BudgetCategory.find({owner: Meteor.userId()}, {sort: {name: 1}});
+    parents: function (type) {
+        return getAllParentCategories(type);
     }
 });
 
@@ -34,6 +34,9 @@ Template.category_detail.helpers({
     },
     is_child_category: function () {
         return isCategoryLeaf(this);
+    },
+    category_childs: function(){
+        return getAllChildOfParent(this.name);
     }
 });
 
@@ -71,7 +74,7 @@ Template.accounts.helpers({
     },
     currency: function(currencyCode){
         return getCurrencyByCode(currencyCode).name;
-    },
+    }
 });
 
 //TRANSACTIONS

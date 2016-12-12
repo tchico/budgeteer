@@ -36,7 +36,7 @@ function addChildToParent(parentCategory, categoryName) {
 }
 
 function hasParent(category) {
-    return category.parent_category && category.parent_category != category.name;
+    return category.parent_category && category.parent_category != "";
 }
 
 
@@ -54,8 +54,16 @@ function createBudget(budgetName, categoryName) {
 function addCategoryToBudgets(categoryName) {
     var budgetNames = getBudgetsList();
     budgetNames.forEach(function (budget) {
-        createBudget(budget.name, categoryName);
+        if(existsBudget(budget.name, categoryName)){
+            throw new Meteor.Error("Budget "+ budget.name + " already has category "+categoryName);
+        }else {
+            createBudget(budget.name, categoryName);
+        }
     });
+}
+
+function existsBudget(budgetName, categoryName){
+    return Budget.find({name: budgetName, category: categoryName, owner: Meteor.userId}).fetch().length > 0;
 }
 
 //ACCOUNTS
@@ -98,7 +106,7 @@ Meteor.methods({
             throw new Meteor.Error("Category already exists");
         }
 
-        if (parentCategory && parentCategory != categoryName) {
+        if (parentCategory && parentCategory != "") {
             var parent = BudgetCategory.findOne({'name': parentCategory, 'owner': Meteor.userId()});
             if (!parent) {
                 throw new Meteor.Error("Parent Category not found");
@@ -111,6 +119,7 @@ Meteor.methods({
             name: categoryName,
             parent_category: parentCategory,
             type: type,
+            sorting_name: parentCategory.toLowerCase()+categoryName.toLowerCase(),
             owner: Meteor.userId(),
             created_date: new Date()
         });
@@ -316,5 +325,5 @@ Meteor.methods({
         }
 
         Transaction.remove({_id: transaction._id});
-    },
+    }
 });
