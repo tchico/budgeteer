@@ -34,3 +34,4 @@ twbs:bootstrap
 standard-minifier-css@1.3.2
 standard-minifier-js@1.2.1
 shell-server
+templates:tabs

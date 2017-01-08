@@ -41,27 +41,7 @@ Template.category_detail.helpers({
 });
 
 
-//BUDGET
-Template.budget.helpers({
-    categories: function (type, budgetName) {
-        return getBudgetRows(type, budgetName);
-    },
-    category_display_name: function () {
-        var category = BudgetCategory.findOne({name: this.category});
-        return getCategoryDisplayName(category);
-    },
-    budget_list: getBudgetsList,
-    summary: function (budgetName) {
-        return getAggregatedBudgetTable(budgetName);
-    },
-    summary_column: function (value) {
-        var css_class = "text-success";
-        if (value < 0) {
-            css_class = "text-danger";
-        }
-        return '<td class="' + css_class + '">' + value + '</td>';
-    }
-});
+
 
 
 //ACCOUNTS

@@ -115,7 +115,9 @@
         <item url="file://$USER_HOME$/.meteor/packages/templating-tools/1.0.5/web.browser/html-scanner-tests.js" />
         <item url="file://$USER_HOME$/.meteor/packages/templating-tools/1.0.5/web.browser/throw-compile-error.js" />
         <item url="file://$USER_HOME$/.meteor/packages/templating-tools/1.0.5/web.browser/code-generation.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/templates_tabs/2.3.0/web.browser/templates_tabs.coffee" />
         <item url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/deprecated.js" />
+        <item url="file://$USER_HOME$/.meteor/packages/templates_tabs/2.3.0/web.browser/templates_tabs.css" />
         <item url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/tracker.js" />
         <item url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
         <item url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/pre.js" />
@@ -351,7 +353,9 @@
       <root url="file://$USER_HOME$/.meteor/packages/templating-tools/1.0.5/web.browser/html-scanner-tests.js" />
       <root url="file://$USER_HOME$/.meteor/packages/templating-tools/1.0.5/web.browser/throw-compile-error.js" />
       <root url="file://$USER_HOME$/.meteor/packages/templating-tools/1.0.5/web.browser/code-generation.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/templates_tabs/2.3.0/web.browser/templates_tabs.coffee" />
       <root url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/deprecated.js" />
+      <root url="file://$USER_HOME$/.meteor/packages/templates_tabs/2.3.0/web.browser/templates_tabs.css" />
       <root url="file://$USER_HOME$/.meteor/packages/tracker/1.1.1/web.browser/tracker.js" />
       <root url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/underscore.js" />
       <root url="file://$USER_HOME$/.meteor/packages/underscore/1.0.10/web.browser/pre.js" />
