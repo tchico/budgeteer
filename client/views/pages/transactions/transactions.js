@@ -1,4 +1,72 @@
-Template.transactions.rendered = function() {
+Template.transactionTable.onCreated(function () {
+
+    // 1. Initialization
+
+    var instance = this;
+
+    // 2. Autorun
+    instance.autorun(function () {
+
+        // subscribe to the posts publication
+        var subscription = instance.subscribe('transactions');
+
+        // if subscription is ready, set limit to newLimit
+        if (subscription.ready()) {
+            console.log("> Received posts. \n\n")
+        } else {
+            console.log("> Subscription is not ready yet. \n\n");
+        }
+    });
+
+    // 3. Cursor
+
+    instance.transactions = function(accountId) {
+        return getTransactionsOfAccount(accountId);
+    }
+
+});
+
+Template.transactionTable.onRendered(function () {
+    var template = this;
+
+    template.subscribe('transactions', function () {
+        // Wait for the data to load using the callback
+        Tracker.afterFlush(function () {
+            // Use Tracker.afterFlush to wait for the UI to re-render
+            loadTransactionTemplates();
+        });
+    });
+});
+
+
+
+//TRANSACTIONS HELPERS
+Template.transactions.helpers({
+    accounts: function () {
+        return getAccounts();
+    },
+    categories: function(){
+        return getAllLeafCategories();
+    }
+});
+
+Template.transactionTable.helpers({
+        transactionsOfAccount: function (accountId) {
+            return Template.instance().transactions(accountId);
+        },
+        categoryName: function(categoryId){
+            var category = getCategory(categoryId);
+            return category.name;
+        },
+        isType: function(type, compareType){
+            return type == compareType;
+        }
+    }
+);
+
+
+//FUNCTIONS
+function loadTransactionTemplates() {
 
     // Initialize i-check plugin
     $('.i-checks').iCheck({
@@ -33,40 +101,25 @@ Template.transactions.rendered = function() {
     for(i in accountList) {
         var account = accountList[i];
 
-        //initialize the data table
-        $('#editable-' + account.name).dataTable({
-            responsive: true,
-            dom: 'T<"clear">lfrtip',
-            paging: true,
-            searching: true,
-            info: false,
-            ordering: true,
-            /*"columnDefs": [
-             { "visible": false, "targets": 13 }
-             ],
-             "drawCallback": function ( settings ) {
-             var api = this.api();
-             var rows = api.rows( {page:'current'} ).nodes();
-             var last=null;
+        loadTransactionTemplate(account.name);
+    }
+}
 
-             api.column(13, {page:'current'} ).data().each( function ( group, i ) {
-             if ( last !== group ) {
-             $(rows).eq( i ).before(
-             '<tr class="group"><td colspan="13">'+group+'</td></tr>'
-             );
+function loadTransactionTemplate(templateName){
+    //initialize the data table
+    $('#editable-' + templateName).DataTable({
+        retrieve: true,
+        responsive: true,
+        dom: 'T<"clear">lfrtip',
+        paging: true,
+        searching: true,
+        info: false,
+        ordering: true
+    });
 
-             last = group;
-             }
-             } );
-             }*/
-        });
+    drawTransactionTable(templateName);
+}
 
-        drawTransactionTable(account.name);
-    };
-};
-
-
-//FUNCTIONS
 function drawTransactionTable(accountName){
     var oTable = $('#editable-'+accountName).DataTable();
 
@@ -127,7 +180,7 @@ function drawTransactionTable(accountName){
         });
 
     oTable.draw();
-};
+}
 
 function createTransaction(date, category, description, type, account, amount){
     console.log("creating the transaction ("
@@ -171,6 +224,7 @@ function deleteTransaction(transactionId) {
         });
     return true;
 }
+
 
 Template.transactions.events({
     "click #add_transaction": function(event, template) {
@@ -225,7 +279,11 @@ Template.transactions.events({
         }, function() {
             deleteTransaction(transactionId);
         });
+    },
+    "click .collapse-link": function (event, template) {
+        // Prevent default browser form submit
+        event.preventDefault();
 
+        loadTransactionTemplate("kbc");
     }
-
 });

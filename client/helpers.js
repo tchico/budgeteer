@@ -57,22 +57,3 @@ Template.accounts.helpers({
     }
 });
 
-//TRANSACTIONS
-Template.transactions.helpers({
-    accounts: function () {
-        return getAccounts();
-    },
-    transactions: function(accountId) {
-        return getTransactionsOfAccount(accountId);
-    },
-    categories: function(){
-        return getAllLeafCategories();
-    },
-    categoryName: function(categoryId){
-        var category = getCategory(categoryId);
-        return category.name;
-    },
-    isType: function(type, compareType){
-        return type == compareType;
-    }
-});

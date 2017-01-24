@@ -12,10 +12,6 @@ Template.budget.onCreated(function () {
     Meteor.subscribe("budget_categories");
 });
 
-
-
-
-
 Template.budgetTable.onRendered(function() {
         /*
          We need to get the DOM rendered in order to use the jquery selectors
@@ -27,60 +23,11 @@ Template.budgetTable.onRendered(function() {
     }
 );
 
-ReactiveTabs.createInterface({
-    template: 'dynamicTabs',
-    onChange: function (slug, template) {
-        // This callback runs every time a tab changes.
-        // The `template` instance is unique per {{#basicTabs}} block.
-        console.log('[tabs] Tab has changed! Current tab:', slug);
-        console.log('[tabs] Template instance calling onChange:', template);
-        loadTemplate(slug);
-        Session.set("activeTab", slug);
-    }
-});
-
 
 
 //BUDGET
 Template.budget.helpers({
-    budget_list: getBudgetsList,
-    tabs: function () {
-        // Every tab object MUST have a name and a slug!
-        var budgetList = getBudgetsList();
-        var favBudgetName = getFavouriteBudget();
-        var tabsSlugMap = [{name: favBudgetName, slug: favBudgetName}];
-        for (i in budgetList) {
-            var budget = budgetList[i];
-
-            if(budget.name != favBudgetName){
-                tabsSlugMap.push({name: budget.name, slug: budget.name});
-            }
-        }
-        return tabsSlugMap;
-        /*
-         SIMPLE EXAMPLE containing the onRender function
-         return [
-         { name: 'People', slug: 'people' },
-         { name: 'Places', slug: 'places' },
-         { name: 'Things', slug: 'things', onRender: function(slug, template) {
-         // This callback runs every time this specific tab's content renders.
-         // As with `onChange`, the `template` instance is unique per block helper.
-         alert("[tabs] Things has been rendered!");
-         }}
-         ];
-         */
-    },
-    activeTab: function () {
-        // Use this optional helper to reactively set the active tab.
-        // All you have to do is return the slug of the tab.
-
-        // You can set this using an Iron Router param if you want--
-        // or a Session variable, or any reactive value from anywhere.
-
-        // If you don't provide an active tab, the first one is selected by default.
-        // See the `advanced use` section below to learn about dynamic tabs.
-        return Session.get("activeTab");
-    }
+    budget_list: getBudgetsList
 });
 
 Template.budgetTable.helpers({
@@ -111,7 +58,6 @@ Template.budgetTable.helpers({
 
 function loadTemplates(){
     var budgetList = getBudgetsList();
-    var favourite_budget = undefined;
     for (i in budgetList) {
         var budget = budgetList[i];
         loadTemplate(budget.name);
@@ -119,13 +65,14 @@ function loadTemplates(){
             Session.set('activeTab', budget.name);
         }
     }
-};
+}
 
 function loadTemplate(budgetName){
     var selector = $("#editable-"+budgetName);
 
     //initialize the data table
     var oTable = getDatatableInstance(budgetName);
+
     /*  use the legacy lower case dataTable instance fetch method
      to be able to access the fnGetPosition method.
      */
@@ -182,12 +129,11 @@ function loadTemplate(budgetName){
                     return false;
                 }
             },
-            "width": "90%",
+            "width": "100%",
             "height": "100%",
             "placeholder": ""
         });
-
-    oTable.draw();
+    //oTable.draw();
 }
 
 function getDatatableInstance(budgetName){
@@ -363,7 +309,8 @@ Template.deleteModalTemplate.events(
                     $('body').removeClass('modal-open');
                     //because the deleted budget will still be the active one
                     //then we must active the favourite one
-                    var tab_name = $('.fa-star').parent('.open_budget').attr('href');
+                    var tab_name;
+                    tab_name = $('.fa-star').parent('.open_budget').attr('href');
                     $('.fa-star').parent('.open_budget').parent().toggleClass('active');
                     $(tab_name).toggleClass('active');
                 });

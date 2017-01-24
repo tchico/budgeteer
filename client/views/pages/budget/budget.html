@@ -20,133 +20,95 @@
         </div>
         <div class="row">
             <div class="col-lg-12">
-                <!--div class="tabs-container">
-                    {{#if budget_list}} {{else}}
-                    <div class="ibox float-e-margins panel-body">
-                        <div class="ibox-content text-center p-md">
-                            <h2><span class="text-navy">Budget</span>
-                                    here you set your budget<br/>
-                                </h2>
+                {{#each budget_list}}
+                    <div class="ibox {{#if fav}}{{else}}collapsed{{/if}}">
+                        <div class="ibox-title">
+                            <h5>{{name}}</h5>
+                            {{>iboxTools}}
+                        </div>
+                        <div class="ibox-content">
+                            {{> budgetTable}}
                         </div>
                     </div>
-                    {{/if}}
-                    <ul class="nav nav-tabs">
-                        {{#each budget_list}}
-                        <li class="{{#if fav}}active{{/if}}">
-                            <a data-toggle="tab" href="#tab-{{name}}" class="open_budget">
-                                    {{#if fav}}
-                                    <i class="fa fa-star"></i> {{/if}} {{name}}
-                                </a>
-                        </li>
-                        {{/each}}
-                    </ul>
-                    <div class="tab-content panel-body">
-                        {{#each budget_list}}
-                            {{> budgetTable}}
-                        {{/each}}
-                    </div>
-                </div-->
-
-                <!-- Use `name` to add a custom class to the outer container -->
-                {{#dynamicTabs name="" tabs=tabs activeTab=activeTab}}
-                    <!--
-                      There are two ways to define content for your tabs:
-
-                      1. Wrap each tabbed section in a blank `<div></div>`.
-                         Sections must correspond with the order of the tabs you specified.
-
-                      2. Wrap each tabbed section in the provided block helper (RECOMMENDED!).
-                         `{{#tabContent slug="nameOfSlug"}} ... {{/tabContent}}`
-                         These can be defined in any order you like.
-                    -->
-                    {{#each budget_list}}
-                        {{#tabContent slug=name}}
-                            {{> budgetTable}}
-                        {{/tabContent}}
-                    {{/each}}
-                {{/dynamicTabs}}
-
+                {{/each}}
             </div>
         </div>
     </div>
-
 </template>
 
 <template name="budgetTable">
-    <!--<div id="tab-{{name}}" class="tab-pane {{#if fav}}active{{/if}}">-->
-        <div class="row float-e-margins">
-            <div class="col-xs-12 col-sm-6 {{#if fav}}col-md-11{{else}}col-md-10{{/if}}"></div>
-            <div class="col-xs-6 {{#if fav}}col-md-1{{else}}col-md-2{{/if}}">
-                {{#unless fav}}
-                    <button id="favourite_budget" class="btn btn-primary btn-xs" type="button">
-                        <i class="fa fa-star"> Set as favourite</i>
-                    </button>
-                    <button id="open_delete_modal" class="btn btn-danger btn-xs" type="button">
-                        <i class="fa fa-warning"> Delete</i>
-                    </button>
-                {{/unless}}
-            </div>
+    <div class="row float-e-margins">
+        <div class="col-xs-12 col-sm-6 {{#if fav}}col-md-11{{else}}col-md-10{{/if}}"></div>
+        <div class="col-xs-6 {{#if fav}}col-md-1{{else}}col-md-2{{/if}}">
+            {{#unless fav}}
+                <button id="favourite_budget" class="btn btn-primary btn-xs" type="button">
+                    <i class="fa fa-star"> Set as favourite</i>
+                </button>
+                <button id="open_delete_modal" class="btn btn-danger btn-xs" type="button">
+                    <i class="fa fa-warning"> Delete</i>
+                </button>
+            {{/unless}}
         </div>
-        {{> deleteModalTemplate name}}
-        <table class="table table-striped table-bordered table-hover hover" id="editable-{{name}}">
-            <thead>
-            <tr>
-                <th>Category</th>
-                <th>Jan</th>
-                <th>Feb</th>
-                <th>Mar</th>
-                <th>Apr</th>
-                <th>May</th>
-                <th>Jun</th>
-                <th>Jul</th>
-                <th>Aug</th>
-                <th>Sep</th>
-                <th>Oct</th>
-                <th>Nov</th>
-                <th>Dec</th>
-                <th>Type</th>
+    </div>
+    {{> deleteModalTemplate name}}
+    <table class="table table-striped table-bordered table-hover hover" id="editable-{{name}}">
+        <thead>
+        <tr>
+            <th>Category</th>
+            <th>Jan</th>
+            <th>Feb</th>
+            <th>Mar</th>
+            <th>Apr</th>
+            <th>May</th>
+            <th>Jun</th>
+            <th>Jul</th>
+            <th>Aug</th>
+            <th>Sep</th>
+            <th>Oct</th>
+            <th>Nov</th>
+            <th>Dec</th>
+            <th>Type</th>
+        </tr>
+        </thead>
+        <tbody>
+        {{#each summary name}}
+            <tr class="gradeC">
+                <td style="text-align: left">{{this.[0]}}</td>
+                {{{summary_column this.[1]}}}
+                {{{summary_column this.[2]}}}
+                {{{summary_column this.[3]}}}
+                {{{summary_column this.[4]}}}
+                {{{summary_column this.[5]}}}
+                {{{summary_column this.[6]}}}
+                {{{summary_column this.[7]}}}
+                {{{summary_column this.[8]}}}
+                {{{summary_column this.[9]}}}
+                {{{summary_column this.[10]}}}
+                {{{summary_column this.[11]}}}
+                {{{summary_column this.[12]}}}
+                <td>Summary</td>
             </tr>
-            </thead>
-            <tbody>
-            {{#each summary name}}
-                <tr class="gradeC">
-                    <td style="text-align: left">{{this.[0]}}</td>
-                    {{{summary_column this.[1]}}}
-                    {{{summary_column this.[2]}}}
-                    {{{summary_column this.[3]}}}
-                    {{{summary_column this.[4]}}}
-                    {{{summary_column this.[5]}}}
-                    {{{summary_column this.[6]}}}
-                    {{{summary_column this.[7]}}}
-                    {{{summary_column this.[8]}}}
-                    {{{summary_column this.[9]}}}
-                    {{{summary_column this.[10]}}}
-                    {{{summary_column this.[11]}}}
-                    {{{summary_column this.[12]}}}
-                    <td>Summary</td>
-                </tr>
-            {{/each}}
-            {{#each categories "Income" name}}
-                <tr class="gradeX">
-                    <td style="text-align: left">{{category_display_name}}</td>
-                    {{#each arrayify amount}}
-                        <td class="cat_editable">{{value}}</td>
-                    {{/each}}
-                    <td>Income</td>
-                </tr>
-            {{/each}}
-            {{#each categories "Expense" name}}
-                <tr class="gradeX">
-                    <td style="text-align: left">{{category_display_name}}</td>
-                    {{#each arrayify amount}}
-                        <td class="cat_editable">{{value}}</td>
-                    {{/each}}
-                    <td>Expense</td>
-                </tr>
-            {{/each}}
-            </tbody>
-        </table>
-    <!--</div>-->
+        {{/each}}
+        {{#each categories "Income" name}}
+            <tr class="gradeX">
+                <td style="text-align: left">{{category_display_name}}</td>
+                {{#each arrayify amount}}
+                    <td class="cat_editable">{{value}}</td>
+                {{/each}}
+                <td>Income</td>
+            </tr>
+        {{/each}}
+        {{#each categories "Expense" name}}
+            <tr class="gradeX">
+                <td style="text-align: left">{{category_display_name}}</td>
+                {{#each arrayify amount}}
+                    <td class="cat_editable">{{value}}</td>
+                {{/each}}
+                <td>Expense</td>
+            </tr>
+        {{/each}}
+        </tbody>
+    </table>
 </template>
 
 
